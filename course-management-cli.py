@@ -70,7 +70,8 @@ class CourseManagementSystem:
     
     def get_students_in_a_course(self, course_id):
         cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM students INNER JOIN registrations ON students.id = registrations.students_id WHERE registrations.course_id = ?", (course_id))
+        cursor.execute("SELECT * FROM students INNER JOIN registrations ON students.id = registrations.student_id WHERE registrations.course_id = ?", (course_id,))
+        return cursor.fetchall()
 
 if __name__ == '__main__':
     
@@ -78,7 +79,7 @@ if __name__ == '__main__':
 
 
     moringa_course_management.add_course('Software Development', 'Joseph Wambua')
-    moringa_course_management.add_course('Character Developmen', 'Clare Oparo')
+    moringa_course_management.add_course('Character Development', 'Clare Oparo')
 
     moringa_course_management.add_student("Nestor", "Masinde", "nestor.masinde@gmail.com")
     moringa_course_management.add_student("Naomi", "Lagat", "naomi.lagat@gmail.com")
@@ -87,6 +88,7 @@ if __name__ == '__main__':
     moringa_course_management.register_student(2, 1)
     moringa_course_management.register_student(1, 2)
 
-    
 
+# print(moringa_course_management.get_all_courses())
 
+print(moringa_course_management.get_students_in_a_course(2))
