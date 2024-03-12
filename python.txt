@@ -1,0 +1,14 @@
+-> sqlite database
+-> define classes
+-> CRUD operations
+-> CMD interface
+
+
+User stories
+
+-> Add course
+-> register student
+-> get courses
+-> get students
+-> get students for specific course
+
