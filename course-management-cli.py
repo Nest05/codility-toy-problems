@@ -17,7 +17,7 @@ class CourseManagementSystem:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS courses (
                 id INTEGER PRIMARY KEY,
-                name TEXT,
+                name TEXT UNIQUE,
                 instructor TEXT    
             )
         ''')
@@ -27,7 +27,7 @@ class CourseManagementSystem:
                 id INTEGER PRIMARY KEY,
                 first_name TEXT,
                 last_name TEXT,
-                email TEXT    
+                email TEXT UNIQUE  
             )
         ''')
         
@@ -37,6 +37,7 @@ class CourseManagementSystem:
                 course_id INTEGER,
                 FOREIGN KEY(student_id) REFERENCES students(id),
                 FOREIGN KEY(course_id) REFERENCES courses(id)
+                UNIQUE(student_id, course_id)
             )
         ''')
 
@@ -44,19 +45,40 @@ class CourseManagementSystem:
 
 
     def add_course(self, name, instructor):
-        cursor = self.conn.cursor()
-        cursor.execute("INSERT INTO courses (name, instructor) VALUES (?, ?)", (name, instructor))
-        self.conn.commit()
+
+        if not name or not instructor:
+            print("Error: fields cannot be empty")
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO courses (name, instructor) VALUES (?, ?)", (name, instructor))
+            self.conn.commit()
+            print("Course Added Successfully")
+        except sqlite3.IntegrityError:
+            print(f"Error: {name} already exists!")
 
     def add_student(self, first_name, last_name, email):
-        cursor = self.conn.cursor()
-        cursor.execute("INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)", (first_name, last_name, email))
-        self.conn.commit()
+
+        if not first_name or not last_name or not email:
+            print("Error fields cannot be empty")
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO students (first_name, last_name, email) VALUES (?, ?, ?)", (first_name, last_name, email))
+            self.conn.commit()
+            print("Student added successfully")
+        except sqlite3.IntegrityError:
+            print("Error name already exists")
 
     def register_student(self, student_id, course_id):
-        cursor = self.conn.cursor()
-        cursor.execute("INSERT INTO registrations (student_id, course_id) VALUES (?, ?)", (student_id, course_id))
-        self.conn.commit()
+
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO registrations (student_id, course_id) VALUES (?, ?)", (student_id, course_id))
+            self.conn.commit()
+            print("Student successfully added to course")
+        except sqlite3.IntegrityError:
+            print("Student already added to course")
 
     def get_all_courses(self):
         cursor = self.conn.cursor()
@@ -79,16 +101,19 @@ if __name__ == '__main__':
 
 
     moringa_course_management.add_course('Software Development', 'Joseph Wambua')
-    moringa_course_management.add_course('Character Development', 'Clare Oparo')
+    # moringa_course_management.add_course('Character Development', 'Clare Oparo')
 
-    moringa_course_management.add_student("Nestor", "Masinde", "nestor.masinde@gmail.com")
-    moringa_course_management.add_student("Naomi", "Lagat", "naomi.lagat@gmail.com")
+    # moringa_course_management.add_student("Nestor", "Masinde", "nestor.masinde@gmail.com")
+    # moringa_course_management.add_student("Naomi", "Lagat", "naomi.lagat@gmail.com")
 
-    moringa_course_management.register_student(1, 1)
-    moringa_course_management.register_student(2, 1)
-    moringa_course_management.register_student(1, 2)
+    # moringa_course_management.register_student(1, 1)
+    # moringa_course_management.register_student(2, 1)
+    # moringa_course_management.register_student(1, 2)
 
 
 # print(moringa_course_management.get_all_courses())
 
-print(moringa_course_management.get_students_in_a_course(2))
+# print(moringa_course_management.get_students_in_a_course(2))
+
+# handling exceptions using try catch
+# db schema management -> Data uniqueness and data validation
