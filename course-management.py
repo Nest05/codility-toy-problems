@@ -1,3 +1,9 @@
+# pip install sqlalchemy
+# pip install psycopg2-binary
+# pip freeze > requirements.txt
+
+
+
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey,UniqueConstraint
 
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
